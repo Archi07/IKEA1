@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
+    <title>Force-Directed Graph</title>
+    <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
+    <style type="text/css">
+        circle.node {
+            cursor: pointer;
+            stroke: #3182bd;
+            stroke-width: 1.5px;
+        }
+        line.link {
+            fill: none;
+            stroke: #9ecae1;
+            stroke-width: 1.5px;
+        }
+        div.tooltip {
+            position: absolute;
+            text-align: center;
+            width: auto;
+            height: auto;
+            padding: 3px;
+            font: 12px sans-serif;
+            background: lightsteelblue;
+            border: 0px;
+            border-radius: 8px;
+            pointer-events: none;
+        }
+        d.name{
+            text-decoration: #3c53df;
+        }
+    </style>
+</head>
+<body>
+<div id="chart"></div>
+<script type="text/javascript">
+    var w = 1060,
+        h = 800,
+        node,
+        link,
+        root,
+        t;
+    var COLLAPSE_LEVEL = 1;
+    var force = d3.layout.force()
+        .on("tick", tick)
+        .size([w, h]);
+    var vis = d3.select("#chart").append("svg:svg")
+        .attr("width", w)
+        .attr("height", h);
+    root = {
+        "name": "IKEA","size":1000,
+        "children": [
+            {
+                "name": "Table", 
+                "description":" <b>Extendable Table</b> <br/> Article ID: 301.162.64 <br/> Tags: Dining,Table,Wood <br/> Color: Black <br/> Material: Wood <br/> Country of origin: China",
+                "children": [
+                    {"name": "TP", "size": 3534},
+
+                    {"name": "Table top/Leaf", "description":" <b>Table top/Leaf</b> <br/> Part ID: 12454 <br/> Tags: Wood, Stain, Ash veneer <br/> Color: Black <br/> Material: Wood <br/> Country of origin: China",
+                        "children": [
+                            {
+                                "name": "TP", "size": 3534},
+                            {
+                                "name": "Particleboard", "description":" <b>Particleboard</b> <br/> Part ID: 12323 <br/> Tags:  <br/> Color: Black <br/> Material: Wood <br/> Country of origin: China",
+                                "children": [
+                                    {
+                                        "name": "TP", "size": 3534},
+                                    {
+                                        "name": "injection-molded plastic", "description":" <b>injection-molded plastic</b> <br/> Part ID: 12123 <br/> Tags:  <br/> Country of origin: China",
+                                        "children": [
+                                            {
+                                                "name": "TP", "size": 3534}
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "id":2,"name": "Ash veneer", "description":" <b>Ash veneer</b> <br/> Part ID: 12123 <br/> Tags:  <br/> Country of origin: China",
+                                "children": [
+                                    {
+                                        "name": "TP", "size": 3534},
+                                    {
+                                        "name": "Ash wood", "description":" <b>Ash wood</b> <br/> Part ID: 12123 <br/> Tags:  <br/> Country of origin: China",
+                                        "children": [
+                                            {
+                                                "name": "TP", "size": 3534}
+                                        ]
+                                    },
+                                    {
+                                        "name": "feberboad", "description":" <b>feberboad</b> <br/> Part ID: 12123 <br/> Tags:  <br/> Country of origin: China",
+                                        "children": [
+                                            {
+                                                "name": "TP", "size": 3534}
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "Stain", "description":" <b>Stain</b> <br/> Part ID: 12123 <br/> Tags:  <br/> Country of origin: China",
+                                "children": [
+                                    {"name": "TP", "size": 3534},
+                                    {
+                                        "name": "Stain Wood",
+                                        "children": [
+                                            {
+                                                "name": "TP", "size": 3534}
+                                        ]
+                                    }
+                                ]
+                            },
+                            { "name": "Clear acrylic lacquer", "description":" <b>Clear acrylic lacquer</b> <br/> Part ID: 12123 <br/> Tags:  <br/> Country of origin: China",
+                                "children": [
+                                    {
+                                        "name": "TP", "size": 3534},
+                                    {
+                                        "name": "Acrylic",
+                                        "children": [
+                                            {
+                                                "name": "TP", "size": 3534}
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Underframe",
+                        "children": [
+                            {
+                                "name": "Solid pine",
+                                "children": [
+                                    {
+                                        "name": "TP", "size": 3534}
+                                ]
+                            },
+                            {
+                                "name": "Stain",
+                                "children": [
+                                    {
+                                        "name": "TP", "size": 3534}
+                                ]
+                            },
+                            {
+                                "name": "Ash veneer",
+                                "children": [
+                                    {
+                                        "name": "Ash wood",
+                                        "children": [
+                                            {
+                                                "name": "TP", "size": 3534}
+                                        ]
+                                    },
+                                    {
+                                        "name": "feberboard",
+                                        "children": [
+                                            {
+                                                "name": "TP", "size": 3534}
+                                        ]
+                                    },
+                                    {
+                                        "name": "TP",
+                                        "children": [
+                                            {
+                                                "name": "Factory", "size": 3534}
+                                        ]
+                                    }
+                                ]
+                            },
+                            {
+                                "name": "Clear acrylic lacquer",
+                                "children": [
+                                    {
+                                        "name": "TP",
+                                        "children": [
+                                            {
+                                                "name": "Factory", "size": 3534}
+                                        ]
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "Legs",
+                        "children": [
+                            {"name": "Particleboard",
+                                "size": 7074},
+                            {"name": "Ash veneer", "size": 3116}
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "cabinet with doors",
+                "children": [
+                    {
+                        "name": "panel/Shelf",
+                        "children": [
+                            {"name": "Particleboard", "size": 1983},
+                            {"name": "Foil", "size": 2047},
+                            {"name": "ABS plasti", "size": 1375}
+                        ]
+                    },
+                    {
+                        "name": "Back",
+                        "children": [
+                            {"name": "Fiberboard", "size": 1983},
+                            {"name": "Printed acrylic paint", "size": 1375}
+                        ]
+                    },
+                    {
+                        "name": "Leg/ Rail",
+                        "children": [
+                            {"name": "Foil", "size": 1983},
+                            {"name": "ABS plastic", "size": 1375},
+                            {"name": "Fiberboard", "size": 1375}
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Book display",
+                "children": [
+                    {
+                        "name": "Main parts",
+                        "children": [
+                            {"name": "Particleboard", "size": 721},
+                            {"name": "Printed acrylic paint", "size": 4294},
+                            {"name": "ABS plastic", "size": 9800}
+                        ]
+                    },
+                    {
+                        "name": "Adjustable shelf",
+                        "children": [
+                            {"name": "Particleboard", "size": 721},
+                            {"name": "Fiberboard", "size": 4294}
+                        ]
+                    },
+                    {
+                        "name": "Back panel",
+                        "children": [
+                            {"name": "Fiberboard", "size": 721},
+                            {"name": "Foil", "size": 4294}
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Mirror",
+                "children": [
+                    {
+                        "name": "Metal parts",
+                        "children": [
+                            {"name": "Galvanized steel", "size": 721},
+                            {"name": "Epoxy/polyester powder coating", "size": 4294}
+                        ]
+                    },
+                    {
+                        "name": "Mirror glass",
+                        "children": [
+                            {"name": "Glass", "size": 721},
+                            {"name": "Acrylic paint", "size": 4294}
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Chair",
+                "children": [
+                    {
+                        "name": "Frame",
+                        "children": [
+                            {"name": "Solid beech", "size": 1082},
+                            {"name": "Stain", "size": 1336},
+                            {"name": "Clear acrylic lacquer", "size": 319}
+                        ]
+                    },
+                    {"name": "Seat",
+                        "children": [
+                            {"name": "Molded layer-glued wood veneer", "size": 1082},
+                            {"name": "Beech veneer", "size": 1336},
+                            {"name": "Stain", "size": 319},
+                            {"name": "Clear acrylic lacquer", "size": 1336}
+                        ]
+                    },
+                    {
+                        "name": "Backrest",
+                        "children": [
+                            {"name": "Molded layer-glued wood veneer", "size": 1082},
+                            {"name": "Solid beech", "size": 1336},
+                            {"name": "Stain", "size": 319},
+                            {"name": "Clear acrylic lacquer", "size": 1336}
+                        ]
+                    }
+                ]
+            },
+            {
+                "name": "Desk",
+                "children": [
+                    {
+                        "name": "Desk top",
+                        "children": [
+                            {"name": "Particleboard", "size": 1082},
+                            {"name": "Paper", "size": 1336},
+                            {"name": "Fiberboard", "size": 1336},
+                            {"name": "Acrylic paint", "size": 319},
+                            {"name": "ABS plastic", "size": 1336}
+                        ]
+                    },
+                    {
+                        "name": "Underframe for table top",
+                        "children": [
+                            {"name": "Steel", "size": 1082},
+                            {"name": "Pigmented epoxy/polyester powder coating", "size": 1336}
+                        ]
+                    }
+                ]
+            }
+        ]
+    };
+    function parseLevel(node, level) {
+        node.level = level;
+        if (typeof node.children !== 'undefined') {
+            node.children.forEach(function(children) {
+                parseLevel(children, level + 1);
+            });
+        }
+    }
+    parseLevel(root, 0);
+    // console.log(JSON.stringify(root, null, 2));
+    update();
+    function toggleAll(d) {
+        if (d.children) {
+            d.children.forEach(toggleAll);
+            if (d.level < COLLAPSE_LEVEL){
+                return;
+            }
+            toggle(d);
+        }
+    }
+    // Initialize the display to show a few nodes.
+    root.children.forEach(toggleAll);
+    update(root);
+    // });
+    function update() {
+        var nodes = flatten(root),
+            links = d3.layout.tree().links(nodes);
+        // Restart the force layout.
+        force
+            .nodes(nodes)
+            .links(links)
+            .charge(-1000)
+            .linkDistance(100)
+            .friction(0.5)
+            .start();
+        // Update the links…
+        link = vis.selectAll("line.link")
+            .data(links, function(d) { return d.target.id; });
+        // Enter any new links.
+        link.enter().insert("svg:line", ".node")
+            .attr("class", "link")
+            .attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+        // Exit any old links.
+        link.exit().remove();
+        // Changes line link color on hover
+        link.on("mouseover", function() { d3.select(this).style("stroke","red"); });
+        // Changes line linke color on mouseout
+        link.on("mouseout", function() { d3.select(this).style("stroke","9ecae1"); });
+
+        // Update the nodes…
+        node = vis.selectAll("circle.node")
+            .data(nodes, function(d) { return d.id; })
+            .style("fill", color);
+        // Enter any new nodes.
+        node.enter().append("svg:circle")
+            .attr("class", "node")
+            .attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; })
+            .attr("r",  function (d) {
+                if(d.name === "IKEA")
+                    return "22" ;
+                return "15";
+            })
+            .style("fill", color)
+            .on("click", mouseover)
+            //Tooltips
+            .on("mouseover", function(d) {
+                div.transition()
+                    .duration(200)
+                    .style("opacity", .9);
+                div .html(d.description + "<br/>"  )
+                    .style("left", (d3.event.pageX) + "px")
+                    .style("top", (d3.event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d) {
+                div.transition().duration(500).style("opacity", 0);
+            })
+            .call(force.drag);
+        // Exit any old nodes.
+        node.exit().remove();
+        t = vis.selectAll(".t-node")
+            .data(nodes, function(d) { return d.id; })
+            .style("fill", color);
+        // Enter any new nodes.
+        t.enter().append("svg:text")
+            .attr("class", "t-node")
+            .attr("dx", "25px")
+            .attr("y", 0)
+            .text(function(d){return d.name + " " + (d.level ? d.level:'')});
+        // .call(force.drag);
+        // Exit any old nodes.
+        t.exit().remove();
+    }
+    // add tooltips
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+    function tick() {
+        link.attr("x1", function(d) { return d.source.x; })
+            .attr("y1", function(d) { return d.source.y; })
+            .attr("x2", function(d) { return d.target.x; })
+            .attr("y2", function(d) { return d.target.y; });
+        node.attr("cx", function(d) { return d.x; })
+            .attr("cy", function(d) { return d.y; });
+        t.attr("x", function(d) { return d.x; })
+            .attr("y", function(d) { return d.y; });
+    }
+    // Color leaf nodes orange, and packages white or blue.
+    function color(d) {
+        //console.log(d);
+        if(d.name === "IKEA")
+            return "red";
+        return d._children ? "#3182bd" : d.children ? "#c6dbef" : "#fd8d3c";
+    }
+    // Toggle children on click.
+    function mouseover(d) {
+        if (d.children) {
+            d._children = d.children;
+            d.children = null;
+        } else {
+            d.children = d._children;
+            d._children = null;
+        }
+        update();
+    }
+    // Returns a list of all nodes under the root.
+    function flatten(root) {
+        var nodes = [], i = 0;
+        function recurse(node) {
+            if (node.children) node.children.forEach(recurse);
+            if (!node.id) node.id = ++i;
+            nodes.push(node);
+        }
+        recurse(root);
+        return nodes;
+    }
+    function toggle(d) {
+        if (d.children) {
+            d._children = d.children;
+            d.children = null;
+        } else {
+            d.children = d._children;
+            d._children = null;
+        }
+    }
+</script>
+</body>
+</html>
